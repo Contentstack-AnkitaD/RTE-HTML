@@ -4,14 +4,15 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>JSON to HTML Converter</title>
+    <link href="https://cdn.jsdelivr.net/npm/jsoneditor@9.6.0/dist/jsoneditor.min.css" rel="stylesheet" type="text/css">
     <style>
         body {
             font-family: Arial, sans-serif;
             margin: 20px;
         }
-        textarea {
+        #jsonEditor {
             width: 100%;
-            height: 150px;
+            height: 300px;
             margin-bottom: 10px;
         }
         #htmlStructure, #renderedHtml {
@@ -26,8 +27,7 @@
     </style>
 </head>
 <body>
-    <h1>JSON to HTML Converter</h1>
-    <textarea id="jsonInput" placeholder="Enter JSON here..."></textarea>
+    <div id="jsonEditor"></div>
     <button onclick="convertJsonToHtml()">Convert</button>
     <p id="error" class="error"></p>
     <h2>HTML Structure</h2>
@@ -35,9 +35,14 @@
     <h2>Rendered HTML</h2>
     <div id="renderedHtml"></div>
 
+    <script src="https://cdn.jsdelivr.net/npm/jsoneditor@9.6.0/dist/jsoneditor.min.js"></script>
     <script>
+        const container = document.getElementById("jsonEditor");
+        const options = { mode: "code" };
+        const editor = new JSONEditor(container, options);
+
         async function convertJsonToHtml() {
-            const jsonInput = document.getElementById('jsonInput').value;
+            const jsonInput = editor.getText();
             const errorElement = document.getElementById('error');
             errorElement.textContent = '';
 
@@ -49,13 +54,14 @@
                     },
                     body: JSON.stringify({ json: jsonInput })
                 });
-                
+
                 if (!response.ok) {
                     throw new Error('Network response was not ok');
                 }
 
                 const result = await response.json();
-                document.getElementById('htmlStructure').textContent = result.html;
+                const prettyHtml = result.html.replace(/</g, '&lt;').replace(/>/g, '&gt;');
+                document.getElementById('htmlStructure').innerHTML = prettyHtml;
                 document.getElementById('renderedHtml').innerHTML = result.html;
             } catch (error) {
                 errorElement.textContent = 'Invalid JSON or Server Error';
