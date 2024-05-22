@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>JSON to HTML Converter</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+        }
+        textarea {
+            width: 100%;
+            height: 150px;
+            margin-bottom: 10px;
+        }
+        #htmlStructure, #renderedHtml {
+            border: 1px solid #ddd;
+            padding: 10px;
+            margin-bottom: 10px;
+            background-color: #f9f9f9;
+        }
+        .error {
+            color: red;
+        }
+    </style>
+</head>
+<body>
+    <h1>JSON to HTML Converter</h1>
+    <textarea id="jsonInput" placeholder="Enter JSON here..."></textarea>
+    <button onclick="convertJsonToHtml()">Convert</button>
+    <p id="error" class="error"></p>
+    <h2>HTML Structure</h2>
+    <pre id="htmlStructure"></pre>
+    <h2>Rendered HTML</h2>
+    <div id="renderedHtml"></div>
+
+    <script>
+        async function convertJsonToHtml() {
+            const jsonInput = document.getElementById('jsonInput').value;
+            const errorElement = document.getElementById('error');
+            errorElement.textContent = '';
+
+            try {
+                const response = await fetch('/convert', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ json: jsonInput })
+                });
+                
+                if (!response.ok) {
+                    throw new Error('Network response was not ok');
+                }
+
+                const result = await response.json();
+                document.getElementById('htmlStructure').textContent = result.html;
+                document.getElementById('renderedHtml').innerHTML = result.html;
+            } catch (error) {
+                errorElement.textContent = 'Invalid JSON or Server Error';
+            }
+        }
+    </script>
+</body>
+</html>

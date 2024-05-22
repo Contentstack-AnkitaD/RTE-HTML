@@ -1,0 +1,19 @@
+{
+  "name": "rte-html",
+  "version": "1.0.0",
+  "description": "json-rte-html-converter",
+  "main": "index.js",
+  "type": "module",
+  "scripts": {
+    "start": "node index.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@contentstack/json-rte-serializer": "^2.0.6",
+    "express": "^4.19.2",
+    "prettier": "^3.2.5",
+    "pretty-html-log": "^1.1.1"
+  }
+}
